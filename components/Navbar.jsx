@@ -1,22 +1,28 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { assets } from "@/assets/assets";
 import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import { useClerk, UserButton, useUser } from "@clerk/nextjs";
+import Loading from "./Loading";
 
 const Navbar = () => {
   const { isSeller, router, user } = useAppContext();
   const { openSignIn } = useClerk();
   const { isSignedIn } = useUser();
-
-   const handleSellerDashboard = () =>{
-      if (isSignedIn) {
-        router.push("/seller")
-      }
-      router.push(openSignIn())
-   }
+  const [isLoading, setIsLoading] = useState(false)
+  const handleSellerDashboard = () => {
+    setIsLoading(true)
+    if (isSignedIn) {
+      router.push("/seller");
+    }
+    openSignIn();
+    setIsLoading(false)
+  };
+  if (isLoading) {
+    <Loading/>
+  }
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">
       <Link
