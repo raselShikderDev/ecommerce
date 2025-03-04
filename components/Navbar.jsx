@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { assets, CartIcon, BagIcon } from "@/assets/assets";
+import { assets, CartIcon, BagIcon, HomeIcon, BoxIcon } from "@/assets/assets";
 import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
@@ -11,19 +11,22 @@ const Navbar = () => {
   const { isSeller, router, user } = useAppContext();
   const { openSignIn } = useClerk();
   const { isSignedIn } = useUser();
-  const [isLoading, setIsLoading] = useState(false)
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSellerDashboard = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (isSignedIn) {
       router.push("/seller");
-    } else {
+    }
+    if (!isSignedIn) {
       openSignIn();
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
-    <Loading/>
+  if (isLoading) {
+    return <Loading />;
   }
+
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">
       <Link
@@ -51,7 +54,6 @@ const Navbar = () => {
 
         {isSeller && (
           <button
-            // onClick={() => router.push("/seller")}
             onClick={handleSellerDashboard}
             className="text-xs border px-4 py-1.5 rounded-full"
           >
@@ -65,18 +67,18 @@ const Navbar = () => {
         {isSignedIn ? (
           <UserButton>
             <UserButton.MenuItems>
-            <UserButton.Action
-            label="Cart"
-            labelIcon={<CartIcon />}
-            onClick={() => router.push("/cart")}
-          />
+              <UserButton.Action
+                label="Cart"
+                labelIcon={<CartIcon />}
+                onClick={() => router.push("/cart")}
+              />
             </UserButton.MenuItems>
             <UserButton.MenuItems>
-            <UserButton.Action
-            label="My Orders"
-            labelIcon={<BagIcon />}
-            onClick={() => router.push("/my-orders")}
-          />
+              <UserButton.Action
+                label="My Orders"
+                labelIcon={<BagIcon />}
+                onClick={() => router.push("/my-orders")}
+              />
             </UserButton.MenuItems>
           </UserButton>
         ) : (
@@ -89,7 +91,7 @@ const Navbar = () => {
           </button>
         )}
       </ul>
-
+      {/* For small device */}
       <div className="flex items-center md:hidden gap-3">
         {isSeller && (
           <button
@@ -100,9 +102,41 @@ const Navbar = () => {
           </button>
         )}
         {isSignedIn ? (
-          <UserButton />
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="Home"
+                labelIcon={<HomeIcon />}
+                onClick={() => router.push("/")}
+              />
+            </UserButton.MenuItems>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="Produtcs"
+                labelIcon={<BoxIcon />}
+                onClick={() => router.push("/all-products")}
+              />
+            </UserButton.MenuItems>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="Cart"
+                labelIcon={<CartIcon />}
+                onClick={() => router.push("/cart")}
+              />
+            </UserButton.MenuItems>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="My Orders"
+                labelIcon={<BagIcon />}
+                onClick={() => router.push("/my-orders")}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
         ) : (
-          <button className="flex items-center gap-2 hover:text-gray-900 transition">
+          <button
+            onClick={openSignIn}
+            className="flex items-center gap-2 hover:text-gray-900 transition"
+          >
             <Image src={assets.user_icon} alt="user icon" />
             Account
           </button>
