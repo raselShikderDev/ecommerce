@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { assets } from "@/assets/assets";
+import { assets, CartIcon, BagIcon } from "@/assets/assets";
 import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
@@ -12,15 +12,16 @@ const Navbar = () => {
   const { openSignIn } = useClerk();
   const { isSignedIn } = useUser();
   const [isLoading, setIsLoading] = useState(false)
+  
   const handleSellerDashboard = () => {
     setIsLoading(true)
     if (isSignedIn) {
       router.push("/seller");
+    } else {
+      openSignIn();
     }
-    openSignIn();
     setIsLoading(false)
   };
-  if (isLoading) {
     <Loading/>
   }
   return (
@@ -62,7 +63,22 @@ const Navbar = () => {
       <ul className="hidden md:flex items-center gap-4 ">
         <Image className="w-4 h-4" src={assets.search_icon} alt="search icon" />
         {isSignedIn ? (
-          <UserButton />
+          <UserButton>
+            <UserButton.MenuItems>
+            <UserButton.Action
+            label="Cart"
+            labelIcon={<CartIcon />}
+            onClick={() => router.push("/cart")}
+          />
+            </UserButton.MenuItems>
+            <UserButton.MenuItems>
+            <UserButton.Action
+            label="My Orders"
+            labelIcon={<BagIcon />}
+            onClick={() => router.push("/my-orders")}
+          />
+            </UserButton.MenuItems>
+          </UserButton>
         ) : (
           <button
             onClick={openSignIn}
