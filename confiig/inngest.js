@@ -3,7 +3,7 @@ import dbConnect from "./db";
 import userModel from "@/models/userModel";
 
 // Create a client to send and receive events
-export const inngest = new Inngest({ id: "my-app" });
+export const inngest = new Inngest({ id: "shopwhere" });
 
 // Creating User after fetching from clerk
 export const SyncUserCreation = inngest.createFunction(
@@ -49,7 +49,7 @@ export const SyncUserUpdation = inngest.createFunction(
   );
 // Deletation User
 export const SyncUserDeletation = inngest.createFunction(
-    { id: "update-user-from-clerk" },
+    { id: "delete-user-from-clerk" },
     { event: "clerk/user.deleted" },
     async ({ event }) => {
       const {id} = event.data
@@ -62,3 +62,4 @@ export const SyncUserDeletation = inngest.createFunction(
       }
     },
   );
+  

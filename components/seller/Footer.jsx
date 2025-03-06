@@ -1,8 +1,12 @@
 import React from "react";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 
 const Footer = () => {
+  const router = useRouter()
   return (
     <div className="flex md:flex-row flex-col-reverse items-center justify-between text-left w-full px-10">
       <div className="flex items-center gap-4">
