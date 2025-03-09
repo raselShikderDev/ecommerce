@@ -11,18 +11,19 @@ export const SyncUserCreation = inngest.createFunction(
     { event: "clerk/user.created" },
     async ({ event }) => {
       const {id, first_name, last_name, email_addresses, image_url} = event.data
-      const userData ={
-        _id:id,
-        email:email_addresses[0].email_address,
-        name: first_name + " " + last_name,
-        imgUrl:image_url,
-      }
+      const userData = {
+        clerkId: id, // Store Clerk ID in dedicated field
+        email: email_addresses[0].email_address,
+        name: `${first_name} ${last_name}`,
+        imgUrl: image_url,
+      };
       try {
         await dbConnect()
         await userModel.create(userData)
         console.log("successfully fetchd from clerk and created user: ", userData)
       } catch (error) {
         console.error("Fetching & Creating user is faild", error.message)
+        throw error
       }
     },
   );
@@ -40,10 +41,19 @@ export const SyncUserUpdation = inngest.createFunction(
       }
       try {
         await dbConnect()
-        await userModel.findByIdAndUpdate(id, userData)
+        await userModel.findOneAndUpdate(
+          { clerkId: id }, // Query by clerkId
+          {
+            name: `${first_name} ${last_name}`,
+            email: email_addresses[0].email_address,
+            imgUrl: image_url
+          },
+          { new: true }
+        );
         console.log("Successfully updated user: ", userData)
       } catch (error) {
         console.error("Updaing user is faild", error.message)
+        throw error
       }
     },
   );
@@ -55,10 +65,11 @@ export const SyncUserDeletation = inngest.createFunction(
       const {id} = event.data
       try {
         await dbConnect()
-        await userModel.findByIdAndDelete(id)
+        await userModel.findOneAndDelete({ clerkId: id })
         console.log("Successfully deleted user: ", id)
       } catch (error) {
         console.error("Deleting user is faild", error.message)
+        throw error
       }
     },
   );

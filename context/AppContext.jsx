@@ -27,17 +27,56 @@ export const AppContextProvider = (props) => {
     setProducts(productsDummyData);
   };
 
+  // const fetchUserData = async () => {
+  //   try {
+  //     if (user) {
+  //       if (user.publicMetadata.role === "seller") {
+  //         setIsSeller(true);
+  //       }
+  //     }
+
+  //     const token = await getToken();
+  //     console.log(`Token: ${token}`);
+
+  //     if (!token) {
+  //       toast.error("Token is not found");
+  //       return;
+  //     }
+  //     const { data } = await axios.get("/api/users/data", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+
+  //     if (data.success) {
+  //       setUserData(data.user);
+  //       setCartItems(data.user.cartItems);
+  //     } else {
+  //       toast.error(data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
+
   const fetchUserData = async () => {
     try {
-      if (user.publicMetadata.role === "seller") {
-        setIsSeller(true);
+      if (user) {
+        if (user.publicMetadata.role === "seller") {
+          setIsSeller(true);
+        }
       }
-
+  
       const token = await getToken();
+      console.log(`Token: ${token}`);
+      
+      if (!token) {
+        toast.error("Token is not found");
+        return; // Exit the function early
+      }
+  
       const { data } = await axios.get("/api/users/data", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+  
       if (data.success) {
         setUserData(data.user);
         setCartItems(data.user.cartItems);
@@ -45,7 +84,7 @@ export const AppContextProvider = (props) => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
