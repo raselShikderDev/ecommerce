@@ -11,6 +11,7 @@ export async function GET(request) {
       return NextResponse.json({
         success: false,
         message: "Unautorized UserId",
+        status:40004,
       });
     }
     await dbConnect();
